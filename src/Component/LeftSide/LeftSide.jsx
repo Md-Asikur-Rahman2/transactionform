@@ -1,14 +1,18 @@
 import { useState } from "react";
 import bank from "../../assets/bank.png";
 import { Button, Input, Upload, Space, Form } from "antd";
+
 import { UploadOutlined } from "@ant-design/icons";
 import { UserOutlined, BankOutlined, WalletOutlined } from "@ant-design/icons";
+import Zoom from "react-img-zoom-gdn";
+
+import qrCode from "./qr.png"
 import {AiFillHome, AiFillMoneyCollect, AiFillPhone, AiFillProfile, AiOutlineMail} from "react-icons/ai"
 const CustomDropdown = ({ options, onSelect, selectedOption }) => {
   const handleChange = (e) => {
     onSelect(e.target.value);
   };
-
+ 
   return (
     <div className="flex items-center">
       <select
@@ -32,6 +36,9 @@ const CustomDropdown = ({ options, onSelect, selectedOption }) => {
 const LeftSide = () => {
   const [bankdata, setBankData] = useState("Bank");
   const [selectedCurrency, setSelectedCurrency] = useState("BDT");
+  const [selectedCountry, setSelectedCountry] = useState("Bangladesh");
+  const [selectedBank, setSelectedBank] = useState("");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("Bkash");
   const [selectedFile, setSelectedFile] = useState(null);
   const [submittedData, setSubmittedData] = useState(null);
 
@@ -60,161 +67,156 @@ const LeftSide = () => {
 
   return (
     <div className="md:p-5 flex flex-col  justify-center items-center bg-white">
-      <div className="flex justify-start items-center">
-        <Button
-          className="btn btn-primary btn-sm md:mr-2 mr-1 p-2 py-4 h-full bg-gradient-to-r from-pink-500 to-violet-500 text-white"
-          icon={<UserOutlined />}
-        >
-          Name
-        </Button>
-        <Input
-          placeholder="Full Name"
-          className=" w-full max-w-xs input-primary p-2 my-2 rounded-md focus:ring focus:ring-primary"
-          prefix={<UserOutlined className="text-primary" />}
-        />
-      </div>
-      <div className="flex justify-start items-center">
-        <Button
-          className="btn btn-primary btn-sm md:mr-2 mr-1 p-2 py-4 h-full bg-gradient-to-r from-pink-500 to-violet-500 text-white"
-          icon={<AiOutlineMail />}
-        >
-          Email
-        </Button>
-        <Input
-          placeholder="Email"
-          className=" w-full max-w-xs input-primary p-2 my-2"
-          prefix={<AiOutlineMail className="text-primary" />}
-        />
-      </div>
-      <div className="flex justify-start items-center">
-        <Button
-          className="btn btn-primary btn-sm md:mr-2 mr-1 p-2 py-4 h-full bg-gradient-to-r from-pink-500 to-violet-500 text-white"
-          icon={<AiFillPhone />}
-        >
-          Phone
-        </Button>
-
-        <Input
-          placeholder="Phone Number"
-          className=" w-full max-w-xs input-primary p-2 my-2"
-          prefix={<AiFillPhone className="text-primary" />}
-        />
-      </div>
-
-      <Space className="my-2">
-        <Button
-          className="btn btn-primary h-full py-4 btn-sm md:mr-2 mr-1 p-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
-          icon={<WalletOutlined />}
-        >
-          Pay Amount $60000
-        </Button>
-        <Input
-          placeholder="Pay amount"
-          className=" w-full max-w-xs input-primary p-2 bg-white"
-          prefix={<BankOutlined className="text-primary" />}
-        />
-        <CustomDropdown options={["USD", "BDT"]} onSelect={handleCurrencyChange} />
-      </Space>
-
-      <div onChange={handleFromData} className="mt-4 flex justify-start">
-        <Button
-          className="btn btn-primary h-full py-4 btn-sm md:mr-2 mr-1 p-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
-          icon={<WalletOutlined />}
-        >
-          Select Payment Method
-        </Button>
-        <div className="flex flex-col-reverse">
-          <select
-            name="selectBank"
-            defaultValue={"select"}
-            className="select select-primary w-full max-w-xs p-2"
-          >
-            <option value={"select"}>Select One</option>
-            <option>Bank</option>
-            <option>Mobile E-Wallet</option>
-          </select>
-        </div>
-      </div>
-
-      {bankdata === "Mobile E-Wallet" ? (
-        <div className="mt-4 md:flex items-center ">
+      <div className="flex flex-col  justify-center">
+        <Space className="my-2 flex">
           <Button
-            className="btn btn-primary md:mr-2 mr-1 btn-sm mb-3 p-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
-            icon={<BankOutlined />}
+            className="btn btn-primary h-full py-4 btn-sm md:mr-2 mr-1 p-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
+            icon={<WalletOutlined />}
           >
-            Country
+            Amount $60000
+          </Button>
+          <Input
+            placeholder="Pay amount"
+            className=" w-full max-w-xs input-primary p-2 bg-white"
+            prefix={<BankOutlined className="text-primary" />}
+          />
+          <CustomDropdown
+            options={["USD", "BDT", "EUR", "BUST"]}
+            onSelect={handleCurrencyChange}
+          />
+        </Space>
+
+        <div onChange={handleFromData} className="mt-4 flex justify-start">
+          <Button
+            className="btn btn-primary h-full py-4 btn-sm md:mr-2 mr-1 p-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
+            icon={<WalletOutlined />}
+          >
+            Select Payment Method
           </Button>
           <div className="flex flex-col-reverse">
-            <select className="select select-primary w-full max-w-xs p-2">
-              <option disabled selected>
-                Select One
-              </option>
-              <option>Bangladesh</option>
-              <option>India</option>
-              <option>Nepal</option>
+            <select
+              name="selectBank"
+              defaultValue={"select"}
+              className="select select-primary w-full max-w-xs p-2"
+              onChange={(e) => setSelectedBank(e.target.value)}
+            >
+              <option value={"select"}>Select One</option>
+              <option>Bank</option>
+              <option>Mobile E-Wallet</option>
             </select>
           </div>
         </div>
-      ) : (
-        <div className="mt-4 flex items-center justify-between ">
-          <Button
-            className="btn btn-primary py-4 h-full md:mr-2 mr-1 btn-sm  p-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
-            icon={<BankOutlined />}
-          >
-            Bank Name
-          </Button>
-          <div className="flex flex-col-reverse ">
-            <select className="select select-primary w-full max-w-xs p-2">
-              <option disabled selected>
-                Select One
-              </option>
-              <option>Cimg Bank</option>
-              <option>Sonali Bank</option>
-              <option>Eastern Bank</option>
-            </select>
-          </div>
-        </div>
-      )}
 
+        {selectedBank && (
+          <div className="mt-4 md:flex items-center ">
+            <Button
+              className="btn btn-primary h-full md:mr-2 mr-1 btn-sm mb-3 p-2 py-4 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
+              icon={<BankOutlined />}
+            >
+              Country
+            </Button>
+            <div className="flex flex-col-reverse">
+              <select
+                onChange={(e) => setSelectedCountry(e.target.value)}
+                className="select select-primary w-full max-w-xs p-2"
+              >
+                <option disabled selected>
+                  Select One
+                </option>
+                <option>Bangladesh</option>
+                <option>India</option>
+              </select>
+            </div>
+          </div>
+        )}
+        {selectedBank && selectedCountry === "Bangladesh" ? (
+          <div className="mt-4 flex items-center">
+            <Button
+              className="btn btn-primary py-4 h-full md:mr-2 mr-1 btn-sm  p-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
+              icon={<BankOutlined />}
+            >
+              Bangladesh Mobile Bank
+            </Button>
+            <div className="flex">
+              <select
+                onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                className="select select-primary w-full max-w-xs p-2"
+              >
+                <option disabled selected>
+                  Select One
+                </option>
+                <option>Bkash</option>
+                <option>Nagad</option>
+                <option>Rocket</option>
+              </select>
+            </div>
+          </div>
+        ) : (
+          <>
+            {selectedBank && selectedCountry === "India" && (
+              <div className="mt-4 flex items-center">
+                <Button
+                  className="btn btn-primary py-4 h-full md:mr-2 mr-1 btn-sm  p-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
+                  icon={<BankOutlined />}
+                >
+                  India Mobile Bank Name
+                </Button>
+                <div className="flex flex-col-reverse">
+                  <select
+                    onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                    className="select select-primary w-full max-w-xs p-2"
+                  >
+                    <option disabled selected>
+                      Select One
+                    </option>
+                    <option>HHDFC Bank</option>
+                    <option>ICIC Bank</option>
+                    <option>Axis Bank</option>
+                  </select>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
       <div className="mt-8  items-center">
         <div className="flex">
           <div>
             <img className="w-40 mx-auto" src={bank} alt="" />
           </div>
           <div className="md:mx-8 mt-5 items-start">
-            <h1 className="text-center">A/C No : 20200002020</h1>
-            <h1 className="text-center">A/C Name : Arju chandra Das</h1>
-            <h1 className="text-center">A/C Type : Current</h1>
-            <h1 className="text-center">IFSC : Ratnovaapvs</h1>
+            <h1 className="text-center">Bank : {selectedBank}</h1>
+            <h1 className="text-center">Country : {selectedCountry}</h1>
+            <h1 className="text-center">Currency : {selectedCurrency}</h1>
+            <h1 className="text-center">Payment Method : {selectedPaymentMethod}</h1>
           </div>
           <div className="md:mx-8 mt-5 items-start">
-            <img className="w-40 mx-auto" src={bank} alt="" />
+            {/* <ReactImageMagnify
+              {...{
+                smallImage: {
+                  alt: "Wristwatch by Ted Baker London",
+                 
+                  src: "/qr.png",
+                  width: 150,
+                  height:150
+                },
+                largeImage: {
+                  src: "/qr.png",
+                  width: 1200,
+                  height: 1800,
+                  
+                },
+                enlargedImagePosition:"over"
+              }}
+            /> */}
+            <Zoom img="/qr.png" zoomScale={3} width={200} height={200} />;
+            {/* <img className="w-40 mx-auto" src={"/qr.png"} alt="" /> */}
           </div>
         </div>
       </div>
 
-      <div className="mt-4 flex flex-row lg:flex-row items-center">
-        <Button
-          className="btn btn-primary btn-sm md:mr-2 mr-1 mb-3 p-2 py-4 px-3 bg-gradient-to-r from-pink-500 to-violet-500 h-full text-white"
-          icon={<BankOutlined />}
-        >
-          Remittance bank details
-        </Button>
-        <Button
-          className="btn btn-sm btn-primary md:mr-2 mr-1 mb-3  py-4 px-3 bg-gradient-to-r from-pink-500 to-violet-500 h-full text-white"
-          icon={<BankOutlined />}
-        >
-          Bank Details
-        </Button>
-        <Button
-          className="btn btn-primary h-full w-full md:w-60 btn-sm mb-3 md-mb-0 py-4 px-3 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
-          icon={<BankOutlined />}
-        >
-          Payment Receipt Document
-        </Button>
-      </div>
       <Button
-        className="btn w-full btn-primary btn-sm md:mr-2 mr-1 mb-3 p-2 py-4 px-5 bg-gradient-to-r from-pink-500 to-violet-500 h-full text-white"
+        className="btn  btn-primary btn-sm md:mr-2 mr-1 mb-3 p-2 py-4 px-10 w-[50vw] bg-gradient-to-r from-pink-500 to-violet-500 h-full text-white"
         icon={<BankOutlined />}
       >
         Your Transfer Account details
@@ -279,21 +281,72 @@ const LeftSide = () => {
           >
             Payment Receipt document
           </Button>
-
+          {selectedFile && (
+            <div className="mt-4">
+              <h2 className="text-xl mb-3">Uploaded Image</h2>
+              <img
+                className="w-32 h-32 mx-auto"
+                src={URL.createObjectURL(selectedFile)}
+                alt="Uploaded"
+              />
+            </div>
+          )}
           <Upload
-            className=" w-full max-w-xs bg-white input-primary p-2 my-2"
+            className=" w-full max-w-xs rounded-lg bg-gradient-to-r from-pink-500 to-violet-500 text-white input-primary p-2 my-2"
             onChange={handleFileChange}
             beforeUpload={() => false}
             fileList={[]}
           >
-            <Button icon={<UploadOutlined />}>Upload Image</Button>
+            <Button icon={<UploadOutlined />} className="text-white">
+              Upload Image
+            </Button>
           </Upload>
+        </div>
+        <div className="flex justify-start items-center">
+          <Button
+            className="btn btn-primary btn-sm md:mr-2 mr-1 p-2 py-4 h-full bg-gradient-to-r from-pink-500 to-violet-500 text-white"
+            icon={<UserOutlined />}
+          >
+            User Name
+          </Button>
+          <Input
+            placeholder="Full Name"
+            className=" w-full max-w-xs input-primary p-2 my-2 rounded-md focus:ring focus:ring-primary"
+            prefix={<UserOutlined className="text-primary" />}
+          />
+        </div>
+        <div className="flex justify-start items-center">
+          <Button
+            className="btn btn-primary btn-sm md:mr-2 mr-1 p-2 py-4 h-full bg-gradient-to-r from-pink-500 to-violet-500 text-white"
+            icon={<AiOutlineMail />}
+          >
+            Email Address
+          </Button>
+          <Input
+            placeholder="Email"
+            className=" w-full max-w-xs input-primary p-2 my-2"
+            prefix={<AiOutlineMail className="text-primary" />}
+          />
+        </div>
+        <div className="flex justify-start items-center">
+          <Button
+            className="btn btn-primary btn-sm md:mr-2 mr-1 p-2 py-4 h-full bg-gradient-to-r from-pink-500 to-violet-500 text-white"
+            icon={<AiFillPhone />}
+          >
+            Phone Number
+          </Button>
+
+          <Input
+            placeholder="Phone Number"
+            className=" w-full max-w-xs input-primary p-2 my-2"
+            prefix={<AiFillPhone className="text-primary" />}
+          />
         </div>
       </div>
 
       <div className="mt-5">
         <Button
-          className="btn btn-primary block mx-auto h-full py-4 px-36 btn-sm p-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
+          className="btn btn-primary block mx-auto h-full w-[50vw] py-4 px-36 btn-sm p-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
           onClick={handleSubmit}
           icon={<BankOutlined />}
         >
@@ -310,17 +363,6 @@ const LeftSide = () => {
               <div>{value}</div>
             </div>
           ))}
-        </div>
-      )}
-
-      {selectedFile && (
-        <div className="mt-4">
-          <h2 className="text-xl mb-3">Uploaded Image</h2>
-          <img
-            className="w-32 h-32 mx-auto"
-            src={URL.createObjectURL(selectedFile)}
-            alt="Uploaded"
-          />
         </div>
       )}
     </div>
