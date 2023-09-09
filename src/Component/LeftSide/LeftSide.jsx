@@ -1,6 +1,6 @@
 import { useState } from "react";
 import bank from "../../assets/bank.png";
-import { Button, Input, Upload, Space, Form } from "antd";
+import { Button, Input, Upload, Space, Form, Modal, Tooltip } from "antd";
 
 import { UploadOutlined } from "@ant-design/icons";
 import { UserOutlined, BankOutlined, WalletOutlined } from "@ant-design/icons";
@@ -36,12 +36,12 @@ const CustomDropdown = ({ options, onSelect, selectedOption }) => {
 const LeftSide = () => {
   const [bankdata, setBankData] = useState("Bank");
   const [selectedCurrency, setSelectedCurrency] = useState("BDT");
-  const [selectedCountry, setSelectedCountry] = useState("Bangladesh");
+  const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedBank, setSelectedBank] = useState("");
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("Bkash");
   const [selectedFile, setSelectedFile] = useState(null);
   const [submittedData, setSubmittedData] = useState(null);
-
+  const [open,setOpen]=useState(false)
   const handleFromData = (option) => {
     setBankData(option);
   };
@@ -107,7 +107,7 @@ const LeftSide = () => {
           </div>
         </div>
 
-        {selectedBank && (
+        {selectedBank === "Mobile E-Wallet" && (
           <div className="mt-4 md:flex items-center ">
             <Button
               className="btn btn-primary h-full md:mr-2 mr-1 btn-sm mb-3 p-2 py-4 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
@@ -124,12 +124,37 @@ const LeftSide = () => {
                   Select One
                 </option>
                 <option>Bangladesh</option>
-                <option>India</option>
+                {/* <option>India</option> */}
               </select>
             </div>
           </div>
         )}
-        {selectedBank && selectedCountry === "Bangladesh" ? (
+        {selectedBank === "Bank" && (
+          <>
+            <div className="mt-4 flex items-center">
+              <Button
+                className="btn btn-primary py-4 h-full md:mr-2 mr-1 btn-sm  p-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
+                icon={<BankOutlined />}
+              >
+                Bangladesh  Bank
+              </Button>
+              <div className="flex">
+                <select
+                  onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                  className="select select-primary w-full max-w-xs p-2"
+                >
+                  <option disabled selected>
+                    Select One
+                  </option>
+                  <option>Sonali Bank</option>
+                  <option>Dutch Bangla Bank</option>
+                  <option>Rupali Bank</option>
+                </select>
+              </div>
+            </div>
+          </>
+        )}
+        {selectedBank === "Mobile E-Wallet" && selectedCountry === "Bangladesh" && (
           <div className="mt-4 flex items-center">
             <Button
               className="btn btn-primary py-4 h-full md:mr-2 mr-1 btn-sm  p-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
@@ -151,32 +176,6 @@ const LeftSide = () => {
               </select>
             </div>
           </div>
-        ) : (
-          <>
-            {selectedBank && selectedCountry === "India" && (
-              <div className="mt-4 flex items-center">
-                <Button
-                  className="btn btn-primary py-4 h-full md:mr-2 mr-1 btn-sm  p-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
-                  icon={<BankOutlined />}
-                >
-                  India Mobile Bank Name
-                </Button>
-                <div className="flex flex-col-reverse">
-                  <select
-                    onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-                    className="select select-primary w-full max-w-xs p-2"
-                  >
-                    <option disabled selected>
-                      Select One
-                    </option>
-                    <option>HHDFC Bank</option>
-                    <option>ICIC Bank</option>
-                    <option>Axis Bank</option>
-                  </select>
-                </div>
-              </div>
-            )}
-          </>
         )}
       </div>
       <div className="mt-8  items-center">
@@ -185,10 +184,10 @@ const LeftSide = () => {
             <img className="w-40 mx-auto" src={bank} alt="" />
           </div>
           <div className="md:mx-8 mt-5 items-start">
-            <h1 className="text-center">Bank : {selectedBank}</h1>
+            {/* <h1 className="text-center">Bank : {selectedBank}</h1> */}
             <h1 className="text-center">Country : {selectedCountry}</h1>
             <h1 className="text-center">Currency : {selectedCurrency}</h1>
-            <h1 className="text-center">Payment Method : {selectedPaymentMethod}</h1>
+            <h1 className="text-center">Bank : {selectedPaymentMethod}</h1>
           </div>
           <div className="md:mx-8 mt-5 items-start">
             {/* <ReactImageMagnify
@@ -209,8 +208,25 @@ const LeftSide = () => {
                 enlargedImagePosition:"over"
               }}
             /> */}
-            <Zoom img="/qr.png" zoomScale={3} width={200} height={200} />;
-            {/* <img className="w-40 mx-auto" src={"/qr.png"} alt="" /> */}
+            {/* <Zoom img="/qr.png" zoomScale={3} width={250} height={250} />; */}
+            <Tooltip title="Click Me">
+              <img
+                onClick={() => setOpen(true)}
+                className="w-auto h-auto md:w-[240px] md:h-[250px] mt-[-35px] block mx-auto cursor-pointer"
+                src={"/qr.png"}
+                alt=""
+              />
+            </Tooltip>
+            <Modal
+              title="Scan Qr Code Address"
+              centered
+              open={open}
+              onOk={() => setOpen(false)}
+              onCancel={() => setOpen(false)}
+              width={1000}
+            >
+              <img className="w-auto h-auto mx-auto" src={"/qr.png"} alt="qrcode" />
+            </Modal>
           </div>
         </div>
       </div>
@@ -295,7 +311,12 @@ const LeftSide = () => {
         </div>
         {selectedFile && (
           <div className="mt-4">
-            <h2 className="text-xl mb-3 text-rose-500 cursor-pointer" onClick={()=>setSelectedFile("")}>Delete</h2>
+            <h2
+              className="text-xl mb-3 text-rose-500 cursor-pointer"
+              onClick={() => setSelectedFile("")}
+            >
+              Delete
+            </h2>
             <img
               className="w-30 h-50 mx-auto"
               src={URL.createObjectURL(selectedFile)}
@@ -303,46 +324,6 @@ const LeftSide = () => {
             />
           </div>
         )}
-        <div className="flex justify-start items-center">
-          <Button
-            className="btn btn-primary btn-sm md:mr-2 mr-1 p-2 py-4 h-full bg-gradient-to-r from-pink-500 to-violet-500 text-white"
-            icon={<UserOutlined />}
-          >
-            User Name
-          </Button>
-          <Input
-            placeholder="Full Name"
-            className=" w-full max-w-xs input-primary p-2 my-2 rounded-md focus:ring focus:ring-primary"
-            prefix={<UserOutlined className="text-primary" />}
-          />
-        </div>
-        <div className="flex justify-start items-center">
-          <Button
-            className="btn btn-primary btn-sm md:mr-2 mr-1 p-2 py-4 h-full bg-gradient-to-r from-pink-500 to-violet-500 text-white"
-            icon={<AiOutlineMail />}
-          >
-            Email Address
-          </Button>
-          <Input
-            placeholder="Email"
-            className=" w-full max-w-xs input-primary p-2 my-2"
-            prefix={<AiOutlineMail className="text-primary" />}
-          />
-        </div>
-        <div className="flex justify-start items-center">
-          <Button
-            className="btn btn-primary btn-sm md:mr-2 mr-1 p-2 py-4 h-full bg-gradient-to-r from-pink-500 to-violet-500 text-white"
-            icon={<AiFillPhone />}
-          >
-            Phone Number
-          </Button>
-
-          <Input
-            placeholder="Phone Number"
-            className=" w-full max-w-xs input-primary p-2 my-2"
-            prefix={<AiFillPhone className="text-primary" />}
-          />
-        </div>
       </div>
 
       <div className="mt-5">
