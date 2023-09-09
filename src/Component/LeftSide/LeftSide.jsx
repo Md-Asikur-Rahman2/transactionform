@@ -281,16 +281,7 @@ const LeftSide = () => {
           >
             Payment Receipt document
           </Button>
-          {selectedFile && (
-            <div className="mt-4">
-              <h2 className="text-xl mb-3">Uploaded Image</h2>
-              <img
-                className="w-32 h-32 mx-auto"
-                src={URL.createObjectURL(selectedFile)}
-                alt="Uploaded"
-              />
-            </div>
-          )}
+
           <Upload
             className=" w-full max-w-xs rounded-lg bg-gradient-to-r from-pink-500 to-violet-500 text-white input-primary p-2 my-2"
             onChange={handleFileChange}
@@ -302,6 +293,16 @@ const LeftSide = () => {
             </Button>
           </Upload>
         </div>
+        {selectedFile && (
+          <div className="mt-4">
+            <h2 className="text-xl mb-3 text-rose-500 cursor-pointer" onClick={()=>setSelectedFile("")}>Delete</h2>
+            <img
+              className="w-30 h-50 mx-auto"
+              src={URL.createObjectURL(selectedFile)}
+              alt="Uploaded"
+            />
+          </div>
+        )}
         <div className="flex justify-start items-center">
           <Button
             className="btn btn-primary btn-sm md:mr-2 mr-1 p-2 py-4 h-full bg-gradient-to-r from-pink-500 to-violet-500 text-white"
