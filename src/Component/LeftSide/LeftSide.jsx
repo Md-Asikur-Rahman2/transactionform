@@ -41,7 +41,8 @@ const LeftSide = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("Bkash");
   const [selectedFile, setSelectedFile] = useState(null);
   const [submittedData, setSubmittedData] = useState(null);
-  const [open,setOpen]=useState(false)
+  const [open, setOpen] = useState(false)
+   const [isFocused, setIsFocused] = useState(false);
   const handleFromData = (option) => {
     setBankData(option);
   };
@@ -136,7 +137,7 @@ const LeftSide = () => {
                 className="btn btn-primary py-4 h-full md:mr-2 mr-1 btn-sm  p-2 bg-gradient-to-r from-pink-500 to-violet-500 text-white"
                 icon={<BankOutlined />}
               >
-                Bangladesh  Bank
+                Bangladesh Bank
               </Button>
               <div className="flex">
                 <select
@@ -223,7 +224,7 @@ const LeftSide = () => {
               open={open}
               onOk={() => setOpen(false)}
               onCancel={() => setOpen(false)}
-              width={1000}
+              width={600}
             >
               <img className="w-auto h-auto mx-auto" src={"/qr.png"} alt="qrcode" />
             </Modal>
@@ -258,10 +259,12 @@ const LeftSide = () => {
           >
             Account Info:
           </Button>
-          <Input
-            placeholder="Acount Info"
-            className=" w-full max-w-xs input-primary p-2 my-2"
-            prefix={<UserOutlined className="text-primary" />}
+          <textarea
+             placeholder="Account Info"
+        className={`w-full max-w-xs input-primary p-2 my-2  bg-white border border-violet-500 overflow-hidden rounded-lg ${isFocused ? 'input-focused h-36 ring-1 ring-violet-400' : ''}`}
+        prefix={<UserOutlined className="text-primary" />}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
           />
         </div>
         <div className="flex items-center justify-center ">
