@@ -65,7 +65,9 @@ const LeftSide = () => {
 
     setSubmittedData(data);
   };
-
+  const okButtonProps = {
+     className: "custom-ok-button bg-violet-600" 
+  };
   return (
     <div className="md:p-5 flex flex-col  justify-center items-center bg-white">
       <div className="flex flex-col  justify-center">
@@ -224,6 +226,7 @@ const LeftSide = () => {
               open={open}
               onOk={() => setOpen(false)}
               onCancel={() => setOpen(false)}
+              okButtonProps= { okButtonProps }
               width={600}
             >
               <img className="w-auto h-auto mx-auto" src={"/qr.png"} alt="qrcode" />
